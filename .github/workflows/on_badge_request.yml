@@ -64,7 +64,7 @@ jobs:
           FILE_NAME: ${{ steps.parse_repo.outputs.FILE_NAME }}
           COMMIT_SHA: ${{ steps.get_sha.outputs.COMMIT_SHA }}
         run: |
-          BADGE_URL="https://raw.githubusercontent.com/${REPO}/${COMMIT_SHA}/badges/${FILE_NAME}"
+          BADGE_URL="https://raw.githubusercontent.com/${REPO}/${COMMIT_SHA}/badges/${OWNER_REPO}"
           COMMENT_BODY="Badge generated: ${BADGE_URL}"
           curl -X POST \
             -H "Accept: application/vnd.github+json" \
