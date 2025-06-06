@@ -51,7 +51,7 @@ jobs:
           FILE_NAME=$(echo "${OWNER_REPO}_${COLOR}" | tr / _).svg
 
           echo "OWNER_REPO=$OWNER_REPO" >> $GITHUB_OUTPUT
-          echo "COLOR=$COLOR" >> $GITHUB_OUTPUT
+          echo "BADGE_COLOR=$COLOR" >> $GITHUB_OUTPUT
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_OUTPUT
 
       - name: Run language badge script
