@@ -29,8 +29,10 @@ jobs:
       - name: Parse repo from issue body
         id: parse_repo
         run: |
-          echo "OWNER_REPO=$(echo '${{ github.event.issue.body }}' | grep -oP '([\w.-]+/[\w.-]+)' | head -1)" >> $GITHUB_OUTPUT
-          echo "FILE_NAME=$(echo $OWNER_REPO | tr / _).svg" >> $GITHUB_OUTPUT
+          OWNER_REPO=$(echo '${{ github.event.issue.body }}' | grep -oP '([\w.-]+/[\w.-]+)' | head -1)
+          FILE_NAME=$(echo "$OWNER_REPO" | tr / _).svg
+          echo "OWNER_REPO=$OWNER_REPO" >> $GITHUB_OUTPUT
+          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_OUTPUT
 
       - name: Run language badge script
         env:
@@ -64,7 +66,7 @@ jobs:
           FILE_NAME: ${{ steps.parse_repo.outputs.FILE_NAME }}
           COMMIT_SHA: ${{ steps.get_sha.outputs.COMMIT_SHA }}
         run: |
-          BADGE_URL="https://raw.githubusercontent.com/${REPO}/${COMMIT_SHA}/badges/${OWNER_REPO}"
+          BADGE_URL="https://raw.githubusercontent.com/${REPO}/${COMMIT_SHA}/badges/${FILE_NAME}"
           COMMENT_BODY="Badge generated: ${BADGE_URL}"
           curl -X POST \
             -H "Accept: application/vnd.github+json" \
