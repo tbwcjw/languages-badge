@@ -4,6 +4,8 @@ import re
 
 def main():
     issue_body = os.getenv("ISSUE_BODY", "")
+    badge_color = os.getenv("BADGE_COLOR", "blue")
+
     if not issue_body:
         print("No ISSUE_BODY found")
         exit(1)
@@ -29,7 +31,7 @@ def main():
     data = response.json()
     languages = " , ".join(list(data.keys())[:3]) if data else "Unknown"
 
-    badge_url = f"https://img.shields.io/badge/languages-{requests.utils.quote(languages)}-blue"
+    badge_url = f"https://img.shields.io/badge/languages-{requests.utils.quote(languages)}-{badge_color}"
     print(f"Fetching badge from: {badge_url}")
 
     badge_response = requests.get(badge_url)

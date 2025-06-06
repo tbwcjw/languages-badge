@@ -34,10 +34,34 @@ jobs:
           echo "OWNER_REPO=$OWNER_REPO" >> $GITHUB_OUTPUT
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_OUTPUT
 
+      - name: Determine badge color from labels
+        id: parse_color
+        run: |
+          # Define allowed colors
+          COLORS=("purple" "blue" "cyan" "green" "yellow" "orange" "red")
+          ALL_LABELS=($(
+            echo '${{ toJson(github.event.issue.labels) }}' | 
+            jq -r '.[].name'
+          ))
+          
+          COLOR="blue"  # default
+
+          for label in "${ALL_LABELS[@]}"; do
+            for c in "${COLORS[@]}"; do
+              if [[ "$label" == "$c" ]]; then
+                COLOR="$c"
+                break 2
+              fi
+            done
+          done
+
+          echo "color=$COLOR" >> $GITHUB_OUTPUT
+
       - name: Run language badge script
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BADGE_COLOR: ${{ steps.parse_color.outputs.color }}
         run: |
           python .github/scripts/fetch.py
 
