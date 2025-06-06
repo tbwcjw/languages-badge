@@ -1,0 +1,14 @@
+name: Language Badge Request
+description: Submit your repo for language badge generation
+title: Language badge request
+labels:
+  - badge-request
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Repository (user/repo)
+      description: Enter the GitHub repository name in format "user/repo"
+      placeholder: tbwcjw/languages-badge
+    validations:
+      required: true
