@@ -7,8 +7,14 @@ body:
   - type: input
     id: repo
     attributes:
-      label: Create a language badge
+      label: Repository
       description: Enter the GitHub repository name in format "user/repo"
       placeholder: tbwcjw/languages-badge
     validations:
       required: true
+  - type: input
+    id: label
+    attributes:
+      label: Label
+      description: The label for the left side of the badge
+      placeholder: Languages
