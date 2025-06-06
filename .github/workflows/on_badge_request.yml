@@ -29,7 +29,6 @@ jobs:
       - name: Parse repo from issue body and determine badge color
         id: parse_repo_color
         run: |
-          # Parse repo from issue body
           OWNER_REPO=$(echo '${{ github.event.issue.body }}' | grep -oP '([\w.-]+/[\w.-]+)' | head -1)
 
           COLORS=("purple" "blue" "cyan" "green" "yellow" "orange" "red")
@@ -58,14 +57,14 @@ jobs:
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BADGE_COLOR: ${{ steps.parse_color.outputs.color }}
+          BADGE_COLOR: ${{ steps.parse_repo_color.outputs.BADGE_COLOR }}
         run: |
           python .github/scripts/fetch.py
 
       - name: Commit and push badge
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER_REPO: ${{ steps.parse_repo.outputs.OWNER_REPO }}
+          OWNER_REPO: ${{ steps.parse_repo_color.outputs.OWNER_REPO }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -80,7 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
-          FILE_NAME: ${{ steps.parse_repo.outputs.FILE_NAME }}
+          FILE_NAME: ${{ steps.parse_repo_color.outputs.FILE_NAME }}
           COMMIT_SHA: ${{ steps.get_sha.outputs.COMMIT_SHA }}
         run: |
           BADGE_URL="https://raw.githubusercontent.com/${REPO}/refs/heads/main/badges/${FILE_NAME}"
