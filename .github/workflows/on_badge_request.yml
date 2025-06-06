@@ -37,7 +37,7 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python .github/scripts/fetch_languages_badge.py
+          python .github/scripts/fetch.py
 
       - name: Commit and push badge
         env:
