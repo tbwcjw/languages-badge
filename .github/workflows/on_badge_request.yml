@@ -26,26 +26,19 @@ jobs:
       - name: Install requests
         run: python -m pip install requests
 
-      - name: Parse repo from issue body
-        id: parse_repo
+       - name: Parse repo from issue body and determine badge color
+        id: parse_repo_color
         run: |
+          # Parse repo from issue body
           OWNER_REPO=$(echo '${{ github.event.issue.body }}' | grep -oP '([\w.-]+/[\w.-]+)' | head -1)
-          FILE_NAME=$(echo "$OWNER_REPO" | tr / _).svg
-          echo "OWNER_REPO=$OWNER_REPO" >> $GITHUB_OUTPUT
-          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_OUTPUT
 
-      - name: Determine badge color from labels
-        id: parse_color
-        run: |
-          # Define allowed colors
           COLORS=("purple" "blue" "cyan" "green" "yellow" "orange" "red")
           ALL_LABELS=($(
             echo '${{ toJson(github.event.issue.labels) }}' | 
             jq -r '.[].name'
           ))
-          
-          COLOR="blue"  # default
 
+          COLOR="blue"  # default color
           for label in "${ALL_LABELS[@]}"; do
             for c in "${COLORS[@]}"; do
               if [[ "$label" == "$c" ]]; then
@@ -55,7 +48,11 @@ jobs:
             done
           done
 
-          echo "color=$COLOR" >> $GITHUB_OUTPUT
+          FILE_NAME=$(echo "${OWNER_REPO}_${COLOR}" | tr / _).svg
+
+          echo "OWNER_REPO=$OWNER_REPO" >> $GITHUB_OUTPUT
+          echo "COLOR=$COLOR" >> $GITHUB_OUTPUT
+          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_OUTPUT
 
       - name: Run language badge script
         env:
