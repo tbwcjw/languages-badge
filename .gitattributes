@@ -1,8 +1,7 @@
-* text=auto
 *.md linguist-language=Markdown
-
-.github/**/* linguist-generated=false linguist-documentation=false linguist-detectable=true
-
+.github/** linguist-generated=false
+.github/** linguist-detectable=true
+.github/** linguist-documentation=false
 .github/**/*.yml linguist-language=YAML
 .github/**/*.sh linguist-language=Bash
 .github/**/*.py linguist-language=Python
