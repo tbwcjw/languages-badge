@@ -8,16 +8,14 @@
         <li>Enter the <code>user/repo</code> of the repository you are creating the badge for.</li>
         <li>Ensure you use the label <b>badge-request</b> or the issue will be ignored by the workflow.</li>
         <li><b>Optionally</b> add text for the label on the lefthand side of the badge</li>
-        <li><b>Optionally</b> add a label for badge color, we have:
-        <ul>
-            <li>red</li>
-            <li>orange</li>
-            <li>yellow</li>
-            <li>green</li>
-            <li>blue (default)</li>
-            <li>cyan</li>
-            <li>purple</li>
-        </ul>
+        <li><b>Optionally</b> add a label to the issue for badge color, we have:<br>
+            <img src="https://img.shields.io/badge/red-red">
+            <img src="https://img.shields.io/badge/orange-orange">
+            <img src="https://img.shields.io/badge/yellow-yellow">
+            <img src="https://img.shields.io/badge/green-green">
+            <img src="https://img.shields.io/badge/blue (default)-blue">
+            <img src="https://img.shields.io/badge/cyan-cyan">
+            <img src="https://img.shields.io/badge/purple-purple">
         </li>
     </ul>
     <li>Create the issue and wait. GitHub Actions will take the job, and respond to the issue with a link when the badge is created. It will close the issue automatically, if you can't find it check your email. Then, you can use that link to embed into your README, website, forum or wherever. </li>
