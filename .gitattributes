@@ -1,3 +1,2 @@
 * text=auto
-.github/** linguist-generated=false
-.github/** linguist-detectable=true
+.github/** linguist-vendored=false

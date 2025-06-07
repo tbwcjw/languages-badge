@@ -5,18 +5,20 @@ on:
     types: [opened]
 
 permissions:
-  contents: write   # needed for pushing commits
-  issues: write     # for commenting and closing issues
+  contents: write
+  issues: write
 
 jobs:
   handle-badge-request:
     if: contains(github.event.issue.labels.*.name, 'badge-request')
     runs-on: ubuntu-latest
+    env:
+      logging: ${{ vars.LOGGING_ENABLED }}
 
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # needed to push commits back
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -26,49 +28,30 @@ jobs:
       - name: Install requests
         run: python -m pip install requests
 
-      - name: Parse repo from issue body
-        id: parse_repo
-        run: |
-          OWNER_REPO=$(echo '${{ github.event.issue.body }}' | grep -oP '([\w.-]+/[\w.-]+)' | head -1)
-          FILE_NAME=$(echo "$OWNER_REPO" | tr / _).svg
-          echo "OWNER_REPO=$OWNER_REPO" >> $GITHUB_OUTPUT
-          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_OUTPUT
-
-      - name: Determine badge color from labels
-        id: parse_color
-        run: |
-          # Define allowed colors
-          COLORS=("purple" "blue" "cyan" "green" "yellow" "orange" "red")
-          ALL_LABELS=($(
-            echo '${{ toJson(github.event.issue.labels) }}' | 
-            jq -r '.[].name'
-          ))
-          
-          COLOR="blue"  # default
-
-          for label in "${ALL_LABELS[@]}"; do
-            for c in "${COLORS[@]}"; do
-              if [[ "$label" == "$c" ]]; then
-                COLOR="$c"
-                break 2
-              fi
-            done
-          done
-
-          echo "color=$COLOR" >> $GITHUB_OUTPUT
-
-      - name: Run language badge script
+      - name: Parse issue 
+        id: parse_issue
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
+          LABELS: ${{ toJson(github.event.issue.labels) }}
+        run: |
+          chmod +x .github/scripts/parse.sh
+          .github/scripts/parse.sh
+
+      - name: Run language badge script
+        id: run_badge_script
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BADGE_COLOR: ${{ steps.parse_color.outputs.color }}
+          OWNER_REPO: ${{ steps.parse_issue.outputs.OWNER_REPO }}
+          BADGE_COLOR: ${{ steps.parse_issue.outputs.BADGE_COLOR }}
+          BADGE_LABEL: ${{ steps.parse_issue.outputs.BADGE_LABEL }}
         run: |
           python .github/scripts/fetch.py
 
       - name: Commit and push badge
+        if: success()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER_REPO: ${{ steps.parse_repo.outputs.OWNER_REPO }}
+          OWNER_REPO: ${{ steps.parse_issue.outputs.OWNER_REPO }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -79,12 +62,12 @@ jobs:
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Comment on the issue with badge info
+        if: success()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
-          FILE_NAME: ${{ steps.parse_repo.outputs.FILE_NAME }}
-          COMMIT_SHA: ${{ steps.get_sha.outputs.COMMIT_SHA }}
+          FILE_NAME: ${{ steps.parse_issue.outputs.FILE_NAME }}
         run: |
           BADGE_URL="https://raw.githubusercontent.com/${REPO}/refs/heads/main/badges/${FILE_NAME}"
           COMMENT_BODY="Badge generated: ${BADGE_URL}"
@@ -95,6 +78,7 @@ jobs:
             -d "{\"body\": \"$COMMENT_BODY\"}"
 
       - name: Close the issue
+        if: success()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
@@ -105,3 +89,42 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER \
             -d '{"state":"closed"}'
+
+      - name: Handle failure - comment and label the issue
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          COMMENT_BODY="An error occurred while processing your badge request."
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/comments \
+            -d "{\"body\": \"$COMMENT_BODY\"}"
+
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/labels \
+            -d '{"labels": ["failed"]}'
+      
+      - name: Log run
+        if: env.logging == 'true'
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          OWNER_REPO: ${{ steps.parse_issue.outputs.OWNER_REPO }}
+          BADGE_COLOR: ${{ steps.parse_issue.outputs.BADGE_COLOR }}
+          BADGE_LABEL: ${{ steps.parse_issue.outputs.BADGE_LABEL }}
+          FILE_NAME: ${{ steps.parse_issue.outputs.FILE_NAME }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/log.sh
+          if [[ "${{ job.status }}" == "success" ]]; then
+            .github/scripts/log.sh success
+          else
+            .github/scripts/log.sh failed
+          fi
