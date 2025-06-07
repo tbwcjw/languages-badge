@@ -1,4 +1,11 @@
-<b>languages-badge</b> is powered by GitHub Actions and Issues to create badges that list the languages used in your repositories. We use <a href='https://shields.io'>shields.io</a> for that professional, classic and uniform look.
+<h2 align="center">languages-badge</h2>
+<p align="center">
+<b>languages-badge</b> is powered by GitHub Actions and Issues to create badges that list the languages used in your repositories. Using <a href='https://shields.io'>shields.io</a> for that professional, classic and uniform look.</p>
+<p align="center">
+    <img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/Languages_tbwcjw_languages-badge_orange.svg" alt="Languages used in this repo">
+    <img src="https://img.shields.io/github/issues-search/tbwcjw/languages-badge?query=label%3Abadge-request%20is%3Aclosed&label=Badges%20Generated" alt="Badges generated">
+    
+</p>
 <hr>
 <h3>Usage</h3>
 <ul>
@@ -8,7 +15,7 @@
         <li>Enter the <code>user/repo</code> of the repository you are creating the badge for.</li>
         <li>Ensure you use the label <b>badge-request</b> or the issue will be ignored by the workflow.</li>
         <li><b>Optionally</b> add text for the label on the lefthand side of the badge</li>
-        <li><b>Optionally</b> add a label to the issue for badge color, we have:<br>
+        <li><b>Optionally</b> add a label to the issue for badge color, currently implemented:<br>
             <img src="https://img.shields.io/badge/red-red" alt="red">
             <img src="https://img.shields.io/badge/orange-orange" alt="orange">
             <img src="https://img.shields.io/badge/yellow-yellow" alt="yellow">
