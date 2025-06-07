@@ -9,13 +9,13 @@
         <li>Ensure you use the label <b>badge-request</b> or the issue will be ignored by the workflow.</li>
         <li><b>Optionally</b> add text for the label on the lefthand side of the badge</li>
         <li><b>Optionally</b> add a label to the issue for badge color, we have:<br>
-            <img src="https://img.shields.io/badge/red-red">
-            <img src="https://img.shields.io/badge/orange-orange">
-            <img src="https://img.shields.io/badge/yellow-yellow">
-            <img src="https://img.shields.io/badge/green-green">
-            <img src="https://img.shields.io/badge/blue (default)-blue">
-            <img src="https://img.shields.io/badge/cyan-cyan">
-            <img src="https://img.shields.io/badge/purple-purple">
+            <img src="https://img.shields.io/badge/red-red" alt="red">
+            <img src="https://img.shields.io/badge/orange-orange" alt="orange">
+            <img src="https://img.shields.io/badge/yellow-yellow" alt="yellow">
+            <img src="https://img.shields.io/badge/green-green" alt="green">
+            <img src="https://img.shields.io/badge/blue (default)-blue" alt="blue (default)">
+            <img src="https://img.shields.io/badge/cyan-cyan" alt="cyan">
+            <img src="https://img.shields.io/badge/purple-purple" alt="purple">
         </li>
     </ul>
     <li>Create the issue and wait. GitHub Actions will take the job, and respond to the issue with a link when the badge is created. It will close the issue automatically, if you can't find it check your email. Then, you can use that link to embed into your README, website, forum or wherever. </li>
@@ -24,17 +24,17 @@
 <h3>Examples</h3>
 <table>
     <tr>
-        <td><img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/Languages_tbwcjw_tbwcjw_blue.svg"></td>
+        <td><img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/Languages_tbwcjw_tbwcjw_blue.svg" alt="Default"></td>
         <td><b>Simple</b>: Default color, default label.</td>
         <td><a href='https://github.com/tbwcjw/languages-badge/issues/37'>Reference</a></td>
     </tr>
     <tr>
-        <td><img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/Languages_tbwcjw_tbwcjw_orange.svg"></td>
+        <td><img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/Languages_tbwcjw_tbwcjw_orange.svg" alt="Default, custom label"></td>
         <td><b>Colored</b>: Custom color, default label.</td>
         <td><a href='https://github.com/tbwcjw/languages-badge/issues/38'>Reference</a></td>
     </tr>
     <tr>
-        <td><img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/custom%20text_tbwcjw_tbwcjw_yellow.svg"></td>
+        <td><img src="https://raw.githubusercontent.com/tbwcjw/languages-badge/refs/heads/main/badges/custom%20text_tbwcjw_tbwcjw_yellow.svg"alt="Custom color, custom label."></td>
         <td><b>Custom</b>: Custom color, custom label.</td>
         <td><a href='https://github.com/tbwcjw/languages-badge/issues/39'>Reference</a></td>
 </table>
